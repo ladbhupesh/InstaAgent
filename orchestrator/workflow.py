@@ -4,7 +4,6 @@ import asyncio
 from pathlib import Path
 from typing import Dict, Any, TypedDict, Annotated, Optional
 from datetime import datetime
-import uuid
 
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
@@ -13,6 +12,7 @@ from agents.concept_strategist import ConceptStrategist, ReelConcept
 from agents.scriptwriter import Scriptwriter, ReelScript
 from agents.media_generator import MediaGenerator
 from agents.video_assembler import VideoAssembler
+from agents.caption_generator import CaptionGenerator
 from orchestrator.state_manager import StateManager, WorkflowState
 
 
@@ -27,6 +27,7 @@ class WorkflowStateDict(TypedDict):
     image_paths: list
     audio_path: str
     video_path: str
+    caption: dict
     current_step: str
     status: str
     error_message: str
@@ -42,9 +43,16 @@ class ReelsWorkflow:
         self.scriptwriter = Scriptwriter()
         self.media_generator = MediaGenerator()
         self.video_assembler = VideoAssembler()
+        self.caption_generator = CaptionGenerator()
         
         # Build LangGraph workflow
         self.workflow = self._build_workflow()
+    
+    @staticmethod
+    def _generate_workflow_id() -> str:
+        """Generate a timestamp-based workflow ID in format YYYY-MM-DD-HHMMSS."""
+        now = datetime.now()
+        return now.strftime("%Y-%m-%d-%H%M%S")
     
     def _build_workflow(self) -> StateGraph:
         """Build the LangGraph workflow."""
@@ -55,6 +63,7 @@ class ReelsWorkflow:
         workflow.add_node("generate_script", self._generate_script_node)
         workflow.add_node("generate_images", self._generate_images_node)
         workflow.add_node("assemble_video", self._assemble_video_node)
+        workflow.add_node("generate_caption", self._generate_caption_node)
         workflow.add_node("save_state", self._save_state_node)
         
         # Define edges
@@ -159,11 +168,34 @@ class ReelsWorkflow:
             state["video_path"] = str(video_path)
             state["audio_path"] = str(output_dir / "voiceover.mp3")
             state["current_step"] = "video_assembly"
-            state["status"] = "completed"
+            state["status"] = "in_progress"
             
         except Exception as e:
             state["status"] = "failed"
             state["error_message"] = f"Video assembly failed: {str(e)}"
+        
+        return state
+    
+    async def _generate_caption_node(self, state: WorkflowStateDict) -> WorkflowStateDict:
+        """Node: Generate Instagram caption with hashtags."""
+        try:
+            selected_concept = state["concepts"][state["selected_concept_index"]]
+            script_data = state["script"]
+            
+            caption = await self.caption_generator.generate_caption(
+                concept=selected_concept,
+                script=script_data,
+                niche=state.get("niche", ""),
+                keywords=state.get("keywords", "")
+            )
+            
+            state["caption"] = caption.model_dump()
+            state["current_step"] = "caption_generation"
+            state["status"] = "completed"
+            
+        except Exception as e:
+            state["status"] = "failed"
+            state["error_message"] = f"Caption generation failed: {str(e)}"
         
         return state
     
@@ -180,6 +212,7 @@ class ReelsWorkflow:
                 image_paths=state.get("image_paths"),
                 audio_path=state.get("audio_path"),
                 video_path=state.get("video_path"),
+                caption=state.get("caption"),
                 current_step=state.get("current_step", "concept_generation"),
                 status=state.get("status", "in_progress"),
                 error_message=state.get("error_message")
@@ -206,7 +239,7 @@ class ReelsWorkflow:
             Initial state with generated concepts
         """
         if not workflow_id:
-            workflow_id = str(uuid.uuid4())
+            workflow_id = self._generate_workflow_id()
         
         initial_state: WorkflowStateDict = {
             "workflow_id": workflow_id,
@@ -218,6 +251,7 @@ class ReelsWorkflow:
             "image_paths": [],
             "audio_path": "",
             "video_path": "",
+            "caption": {},
             "current_step": "concept_generation",
             "status": "in_progress",
             "error_message": "",
@@ -260,13 +294,14 @@ class ReelsWorkflow:
             "image_paths": saved_state.image_paths or [],
             "audio_path": saved_state.audio_path or "",
             "video_path": saved_state.video_path or "",
+            "caption": saved_state.caption or {},
             "current_step": saved_state.current_step,
             "status": saved_state.status,
             "error_message": saved_state.error_message or "",
             "output_dir": "./output"
         }
         
-        # Continue workflow: generate script, images, and video
+        # Continue workflow: generate script, images, video, and caption
         # We'll manually execute the remaining nodes
         state = await self._generate_script_node(state)
         state = await self._save_state_node(state)
@@ -277,6 +312,10 @@ class ReelsWorkflow:
         
         if state["status"] != "failed":
             state = await self._assemble_video_node(state)
+            state = await self._save_state_node(state)
+        
+        if state["status"] != "failed":
+            state = await self._generate_caption_node(state)
             state = await self._save_state_node(state)
         
         return state

@@ -29,6 +29,9 @@ class WorkflowState(BaseModel):
     audio_path: Optional[str] = None
     video_path: Optional[str] = None
     
+    # Step 5: Caption Generation
+    caption: Optional[Dict[str, Any]] = None
+    
     # Metadata
     current_step: str = "concept_generation"
     status: str = "in_progress"  # in_progress, completed, failed

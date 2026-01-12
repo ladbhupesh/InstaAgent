@@ -122,6 +122,22 @@ class CLI:
                         print(f"  Total Duration: {script.get('total_duration', 0):.1f} seconds")
                         print(f"  Segments: {len(script.get('segments', []))}")
                         print()
+                    
+                    # Display caption
+                    caption = result.get("caption")
+                    if caption:
+                        print("-"*60)
+                        print("📝 Instagram Caption:")
+                        print("-"*60)
+                        print()
+                        print(caption.get("full_caption", ""))
+                        print()
+                        print(f"Hashtags ({len(caption.get('hashtags', []))}):")
+                        hashtags = caption.get("hashtags", [])
+                        if hashtags:
+                            hashtag_str = " ".join([f"#{tag}" for tag in hashtags])
+                            print(f"  {hashtag_str}")
+                        print()
                 
                 print("🎉 Your Instagram Reel is ready!")
             else:

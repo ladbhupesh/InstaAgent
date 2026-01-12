@@ -51,19 +51,31 @@ class Scriptwriter:
         in Instagram Reels. You create engaging, concise scripts optimized for viewer retention 
         and generate detailed image generation prompts that perfectly match the script content.
         
+        CRITICAL CONTENT GUIDELINES:
+        - ALL content must be FUNNY, JOYFUL, and POSITIVE
+        - NO negative energy, drama, conflict, or toxic themes
+        - Focus on humor, lightheartedness, and uplifting moments
+        - Make viewers laugh, smile, and feel good
+        - Use playful, cheerful, and optimistic tones throughout
+        - Avoid any content that could bring down the mood or create negative feelings
+        
         Your scripts should:
-        1. Start with a strong hook (first 3 seconds)
-        2. Maintain engagement throughout
-        3. Be optimized for spoken delivery (natural pauses, emphasis)
+        1. Start with a strong hook (first 3 seconds) that's funny or joyful
+        2. Maintain engagement through humor, positivity, and entertainment
+        3. Be optimized for spoken delivery (natural pauses, emphasis, comedic timing)
         4. Match the target duration precisely
         5. Include clear visual transitions
+        6. Always maintain a positive, funny, or joyful tone - never negative or dramatic
         
         Your image prompts should:
-        1. Be detailed and specific (DALL-E 3 / Midjourney style)
-        2. Match the spoken content at each moment
+        1. Be simple, pleasant, and clean - NOT fancy, complex, or heavy
+        2. Match the spoken content at each moment (with positive, cheerful visuals)
         3. Be optimized for vertical 9:16 format
-        4. Include style, composition, lighting, and mood details
-        5. Create visual continuity between segments"""
+        4. Use soft, natural lighting and pleasant colors (not overly dramatic or intense)
+        5. Create visual continuity between segments
+        6. Keep visuals light, simple, and easy on the eyes - avoid heavy effects, complex compositions, or overwhelming details
+        7. Focus on pleasant, clean aesthetics - simple backgrounds, natural expressions, minimal but effective visuals
+        8. Avoid overly stylized, dramatic, or complex imagery - prefer simplicity and pleasantness"""
         
         concept_str = f"""
         Title: {concept.get('title', 'N/A')}
@@ -82,6 +94,8 @@ class Scriptwriter:
         - Target duration: {target_duration} seconds
         - Format: Vertical 9:16 (Instagram Reels)
         - Style preference: {style_preference if style_preference else "Match the concept's visual style"}
+        - CRITICAL: Keep the script funny, joyful, and positive. NO negative energy, drama, or 
+          toxic themes. Focus on humor, lightheartedness, and making viewers laugh and feel good.
         
         Create:
         1. A full spoken transcript optimized for engagement and natural delivery
@@ -96,11 +110,15 @@ class Scriptwriter:
         5. Pacing notes for optimal delivery
         
         The image prompts should be:
-        - Highly detailed and specific
-        - Include style, composition, lighting, colors, mood
+        - Simple, pleasant, and clean - NOT fancy or heavy
+        - Include soft, natural lighting and pleasant colors
         - Optimized for vertical format
         - Create visual storytelling that matches the script
         - Each prompt should be distinct but maintain visual continuity
+        - Keep visuals light and easy on the eyes - avoid complex compositions, heavy effects, or overwhelming details
+        - Focus on simplicity, pleasantness, and clean aesthetics
+        - Use natural, soft colors and simple backgrounds
+        - Avoid overly stylized, dramatic, or complex imagery
         
         Format your response as JSON:
         {{

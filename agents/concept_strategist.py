@@ -43,25 +43,40 @@ class ConceptStrategist:
         viral content patterns, engagement psychology, and visual storytelling. Your task is to 
         create highly engaging Reel concepts that maximize viewer retention and interaction.
         
-        Each concept should:
-        1. Have a strong hook that captures attention in the first 3 seconds
-        2. Provide clear value or entertainment
-        3. Have a distinct visual style that stands out
-        4. Include an engagement strategy (questions, CTAs, etc.)
-        5. Be optimized for Instagram's algorithm (trending sounds, hashtags, etc.)
+        CRITICAL CONTENT GUIDELINES:
+        - ALL content must be FUNNY, JOYFUL, and POSITIVE
+        - NO negative energy, drama, conflict, or toxic themes
+        - Focus on humor, lightheartedness, and uplifting moments
+        - Make viewers laugh, smile, and feel good
+        - Use playful, cheerful, and optimistic tones
+        - Avoid any content that could bring down the mood
         
-        Make each concept unique and different from the others."""
+        Each concept should:
+        1. Have a strong hook that captures attention in the first 3 seconds (with humor/joy)
+        2. Provide clear value through entertainment, laughter, or positive vibes
+        3. Have a distinct visual style that stands out (bright, cheerful, vibrant)
+        4. Include an engagement strategy (questions, CTAs, etc.) that's fun and positive
+        5. Be optimized for Instagram's algorithm (trending sounds, hashtags, etc.)
+        6. Be inherently funny, joyful, or heartwarming - never negative or dramatic
+        
+        Make each concept unique and different from the others, but ALWAYS maintain a positive, 
+        funny, and joyful energy throughout."""
         
         user_prompt = f"""Generate 3 distinct, high-engagement Instagram Reel concepts for the niche: "{niche}"
 
         Keywords: {keywords if keywords else "None provided"}
         Additional Context: {additional_context if additional_context else "None"}
         
+        IMPORTANT: All concepts MUST be funny, joyful, and positive. NO negative energy, drama, 
+        or toxic themes. Focus on humor, lightheartedness, and making people laugh and feel good.
+        
         For each concept, provide:
         1. Title: A catchy, searchable title
         2. Hook: An attention-grabbing opening (first 3 seconds) that makes viewers stop scrolling
         3. Value Proposition: What value, insight, or entertainment the Reel provides
-        4. Visual Style: Detailed description of the visual aesthetic, colors, composition, and style
+        4. Visual Style: Simple, pleasant, and clean visual aesthetic - NOT fancy or heavy. Use soft colors, 
+           natural lighting, clean compositions. Avoid complex, dramatic, or overwhelming visuals. Keep it 
+           light, pleasant, and easy on the eyes.
         5. Target Audience: Who this Reel is specifically designed for
         6. Engagement Strategy: How to maximize engagement (questions, CTAs, trending elements)
         
@@ -70,6 +85,9 @@ class ConceptStrategist:
         - Optimized for Instagram Reels format (9:16 vertical)
         - Designed for high engagement and shareability
         - Aligned with current trends in the niche
+        - FUNNY, JOYFUL, and POSITIVE - no negative energy whatsoever
+        - Focused on making people laugh, smile, and feel good
+        - Lighthearted, cheerful, and uplifting in tone
         
         IMPORTANT: You MUST respond with ONLY a valid JSON array. No explanations, no markdown, no code blocks.
         The response must start with [ and end with ].
